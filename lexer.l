@@ -1,10 +1,18 @@
 %{
+#include "parser.tab.hpp"
+#include <iostream>
 #include <stdbool.h>
-extern int yyerror(char* s);
+using namespace std;
+// extern int yyerror(char* s);
 %}
 
+%option noyywrap
+
 %%
-([0-9]*[.])?[0-9]+          { printf("NUM %s\n", yytext);}
+"["                         { return OPSB;}
+"setup"                     { return SETUP_TK;}
+"]"                         { return CLSB;}
+/* ([0-9]*[.])?[0-9]+          { printf("NUM %s\n", yytext); }
 (true|false)                { printf("BOOL %s\n", yytext);}
 "("                         { printf("OPP\n");}
 ")"                         { printf("CLP\n");}
@@ -40,5 +48,5 @@ extern int yyerror(char* s);
 \n                          { }
 [ \t]                       {;}
 ;                           {printf("EOS\n");}
-.                           {printf("Unknown symbol %s\n", yytext);}
+.                           {printf("Unknown symbol %s\n", yytext);} */
 %%

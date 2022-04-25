@@ -1,0 +1,81 @@
+%{
+    #include <iostream>
+    #include <string>
+    #include <stdio.h>
+    #include <math.h>
+    using namespace std;
+    int yylex();
+    int yyerror(const char* p) { cerr << "Error!" << endl; return 0;};
+%}
+
+/* declare tokens */
+%token NUM
+%token BOOL
+%token OPP
+%token CLP
+%token OPB
+%token CLB
+%token OPSB
+%token CLSB
+%token CMA
+%token ENDSEC
+%token ADD
+%token SUB
+%token MUL
+%token DIV
+%token ASG
+%token EXP
+%token COL
+%token GT
+%token LT
+%token NE
+%token EQ
+%token GTE
+%token LTE
+%token UPDATE_TK
+%token SETUP_TK
+%token LET
+%token IF
+%token THEN
+%token ELSE
+%token ENDIF
+%token KEYBD
+%token ID
+%token STR
+%token EOS
+%%
+
+
+setup: start_setup setup_statements end_setup
+start_setup: OPSB SETUP_TK CLSB 
+setup_statements: { printf("setup statemnt\n"); }
+end_setup: OPSB ENDSEC SETUP_TK CLSB
+%%
+
+int main()
+{
+    yyparse();
+    return 0;
+}
+
+/* calclist: 
+|   line calclist
+
+line:
+    expr EOL { printf("= %d\n", $1); }
+|   EOL;
+
+expr:
+    NUMBER
+|   expr LOGI_LSHIFT expr { $$ = $1 << $3; }
+|   expr LOGI_RSHIFT expr { $$ = (unsigned int)$1 >> $3; }
+|   expr ARIT_LSHIFT expr { $$ = $1 << $3; }
+|   expr ARIT_RSHIFT expr { $$ = $1 >> $3; }
+|   expr ADD expr { $$ = $1 + $3; }
+|   expr SUB expr { $$ = $1 - $3; }
+|   expr MUL expr { $$ = $1 * $3; }
+|   expr DIV expr { $$ = $1 / $3; }
+|   SUB expr %prec UMINUS { $$ = - $2; }
+|   expr POWER expr { $$ = pow($1, $3); }
+|   OPAREN expr CPAREN { $$ = $2; } */
+
