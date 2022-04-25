@@ -7,7 +7,7 @@ game: game.cpp
 	  g++ game.o -o game -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 clean: 
-	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test
+	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test test_d
 
 
 rungame: game
