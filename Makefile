@@ -7,7 +7,7 @@ game: game.cpp
 	  g++ game.o -o game -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 clean: 
-	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test test_d
+	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test
 
 
 rungame: game
@@ -25,5 +25,13 @@ temp:
 	bison -d -t parser.ypp
 	flex -d lexer.l
 	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+	
+asmitemp:
+	bison parser.ypp
+	flex lexer.l
+	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+	./preprocess.sh test.t amu.t
+	
+	
 
 
