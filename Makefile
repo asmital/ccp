@@ -21,4 +21,8 @@ lexerdemo: lexer.l preprocess.sh sample.t
 	  gcc lex.yy.c -ll -o lexerdemo
 	  ./lexerdemo < preprocessed.t
 	  
+temp:
+	bison -d parser.ypp
+	flex lexer.l
+	g++ -o test parser.tab.cpp lex.yy.c
 
