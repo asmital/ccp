@@ -17,13 +17,13 @@ rungame: game
 lexerdemo: lexer.l preprocess.sh sample.t
 	  chmod 777 preprocess.sh	
 	  ./preprocess.sh sample.t preprocessed.t
-	  flex lexer.l
+	  flex -d lexer.l
 	  gcc lex.yy.c -ll -o lexerdemo
 	  ./lexerdemo < preprocessed.t
 	  
 temp:
-	bison -d parser.ypp
-	flex lexer.l
+	bison -d -t parser.ypp
+	flex -d lexer.l
 	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 

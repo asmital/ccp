@@ -6,20 +6,21 @@
     #include "game.cpp"
     using namespace std;
     int yylex();
-    int yyerror(const char* p) { cerr << "Error!" << endl; return 0;};
+    int yyerror(const char* p) { cerr << "Error!" << p << endl; return 0;};
     extern char yytext[];
 %}
 
 /* %define api.value.type { std::string } */
 
 %code requires {
-    #include <string>
+    #include <string.h>
 }
 
 /* declare tokens */
 %union {
     int val;
     char sym;
+    char* id;
     char* str;
     bool b;
 };
@@ -55,10 +56,11 @@
 %token ENDIF
 %token KEYBD
 %token ID
-%token STR
+%token SSTR
 %token EOS
 
 %type<str> identifier
+%type<str> sstring
 %%
 
 
@@ -69,48 +71,22 @@ end_setup: OPSB ENDSEC SETUP_TK CLSB
 
 setup_stmt: bgchange { cout << "bgchange\n"; }
 
-bgchange: identifier ASG identifier EOS { cout << "bgchange" << $1 << " " << $3 << endl;}
+bgchange: identifier ASG sstring EOS { cout << "bgchange" << $1 << " " << $3 << endl;}
  
 identifier:
-    ID { $$ = yylval.str; }
-/* |   expr ADD expr { $$ = $1 + $3; }
-|   expr SUB expr { $$ = $1 - $3; }
-|   expr MUL expr { $$ = $1 * $3; }
-|   expr DIV expr { $$ = $1 / $3; }
-|   expr EXP expr { $$ = pow($1, $3); }
-|   OPP expr CLP { $$ = $2; } */
-/* 
-definition: LET identifier ASG OPSB array CLSB EOS
-            | LET identifier ASG identifierexpression EOS
-identifierexpression: identifier EOS//i am not doing tetronimo arithmetic
-array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM */
+    ID { $$ = strdup(yylval.id); }
+sstring:
+    SSTR { $$ = strdup(yylval.str); }
+
 %%
 
 int main()
 {
+    #ifdef YYDEBUG
+        yydebug = 1;
+    #endif
     yyparse();
     /* gameloop(); */
     return 0;
 }
-
-/* calclist: 
-|   line calclist
-
-line:
-    expr EOL { printf("= %d\n", $1); }
-|   EOL;
-
-expr:
-    NUMBER
-|   expr LOGI_LSHIFT expr { $$ = $1 << $3; }
-|   expr LOGI_RSHIFT expr { $$ = (unsigned int)$1 >> $3; }
-|   expr ARIT_LSHIFT expr { $$ = $1 << $3; }
-|   expr ARIT_RSHIFT expr { $$ = $1 >> $3; }
-|   expr ADD expr { $$ = $1 + $3; }
-|   expr SUB expr { $$ = $1 - $3; }
-|   expr MUL expr { $$ = $1 * $3; }
-|   expr DIV expr { $$ = $1 / $3; }
-|   SUB expr %prec UMINUS { $$ = - $2; }
-|   expr POWER expr { $$ = pow($1, $3); }
-|   OPAREN expr CPAREN { $$ = $2; } */
 

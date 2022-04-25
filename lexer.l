@@ -43,8 +43,8 @@ bool get_bool(char* str);
 "else"                      { return ELSE; }
 "endif"                     { return ENDIF; }
 "keybind"                   { return KEYBD; }
-([a-zA-Z_][a-zA-Z0-9_]*)    { yylval.str = strdup(yytext); return ID; }
-\"(\\.|[^"\\])*\"           { yylval.str = strdup(yytext); return STR; }
+([a-zA-Z_][a-zA-Z0-9_]*)    { yylval.id = strdup(yytext); return ID; }
+\"(\\.|[^"\\])*\"           { yylval.str = strdup(yytext); return SSTR; }
 \n                          { }
 [ \t]                       {;}
 ;                           { return EOS;}

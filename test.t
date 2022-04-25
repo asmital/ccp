@@ -1,3 +1,3 @@
 [setup] 
-hello = five;
+hello = "five";
 [\setup]
