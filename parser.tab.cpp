@@ -530,7 +530,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    49,    49,    50,    51,    52
+       0,    56,    56,    57,    58,    59
 };
 #endif
 
@@ -1110,8 +1110,8 @@ yyreduce:
   switch (yyn)
     {
   case 4: /* setup_statements: %empty  */
-#line 51 "parser.ypp"
-                  { printf("setup statemnt\n"); }
+#line 58 "parser.ypp"
+                  { printf("setup statement\n"); }
 #line 1116 "parser.tab.cpp"
     break;
 
@@ -1310,7 +1310,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 53 "parser.ypp"
+#line 60 "parser.ypp"
 
 
 int main()

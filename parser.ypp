@@ -9,6 +9,13 @@
 %}
 
 /* declare tokens */
+%union {
+    int val;
+    char sym;
+    char* str;
+    bool b;
+}
+
 %token NUM
 %token BOOL
 %token OPP
@@ -48,7 +55,7 @@
 
 setup: start_setup setup_statements end_setup
 start_setup: OPSB SETUP_TK CLSB 
-setup_statements: { printf("setup statemnt\n"); }
+setup_statements: { printf("setup statement\n"); }
 end_setup: OPSB ENDSEC SETUP_TK CLSB
 %%
 
