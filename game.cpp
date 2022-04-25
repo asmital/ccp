@@ -96,7 +96,7 @@ void rotate(Piece& piece)
 	}
 }
 
-int main()
+int gameloop()
 {
 	//16x16 tiles
 	sf::Texture tile_tex;

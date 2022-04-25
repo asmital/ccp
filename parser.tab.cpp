@@ -73,11 +73,12 @@
     #include <string>
     #include <stdio.h>
     #include <math.h>
+    #include "game.cpp"
     using namespace std;
     int yylex();
     int yyerror(const char* p) { cerr << "Error!" << endl; return 0;};
 
-#line 81 "parser.tab.cpp"
+#line 82 "parser.tab.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -481,7 +482,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  16
+#define YYNRULES  15
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  35
 
@@ -536,8 +537,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    59,    59,    60,    61,    61,    62,    64,    65,    66,
-      67,    69,    70,    70,    71,    74,    86
+       0,    60,    60,    61,    62,    62,    63,    65,    66,    67,
+      69,    70,    70,    71,    74,    86
 };
 #endif
 
@@ -606,10 +607,10 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,    10,     0,     1,     0,     0,    16,     0,
+       0,     0,     0,     0,     0,     1,     0,     0,    15,     0,
        5,     7,     8,     9,     0,     3,     0,     0,     0,     2,
-       4,     0,     0,     0,     0,    15,     0,     0,     0,    14,
-       0,    13,    11,    12,     6
+       4,     0,     0,     0,     0,    14,     0,     0,     0,    13,
+       0,    12,    10,    11,     6
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -659,14 +660,14 @@ static const yytype_int8 yystos[] =
 static const yytype_int8 yyr1[] =
 {
        0,    37,    38,    39,    40,    40,    41,    42,    42,    42,
-      42,    43,    44,    44,    45,    46,    47
+      43,    44,    44,    45,    46,    47
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     3,     3,     2,     1,     4,     1,     1,     1,
-       0,     4,     5,     4,     4,     1,     1
+       4,     5,     4,     4,     1,     1
 };
 
 
@@ -1134,43 +1135,43 @@ yyreduce:
   switch (yyn)
     {
   case 7: /* setup_stmt: bgchange  */
-#line 64 "parser.ypp"
+#line 65 "parser.ypp"
                      {printf("bgchange\n");}
-#line 1140 "parser.tab.cpp"
+#line 1141 "parser.tab.cpp"
     break;
 
   case 8: /* setup_stmt: paramchange  */
-#line 65 "parser.ypp"
+#line 66 "parser.ypp"
                           {printf("paramchange\n");}
-#line 1146 "parser.tab.cpp"
+#line 1147 "parser.tab.cpp"
     break;
 
   case 9: /* setup_stmt: keybindchange  */
-#line 66 "parser.ypp"
+#line 67 "parser.ypp"
                             {printf("keybindchange\n");}
-#line 1152 "parser.tab.cpp"
+#line 1153 "parser.tab.cpp"
     break;
 
-  case 11: /* bgchange: identifier ASG identifier EOS  */
+  case 10: /* bgchange: identifier ASG identifier EOS  */
 #line 69 "parser.ypp"
                                         {printf("bgchange"); }
-#line 1158 "parser.tab.cpp"
+#line 1159 "parser.tab.cpp"
     break;
 
-  case 13: /* paramchange: identifier ASG expr EOS  */
+  case 12: /* paramchange: identifier ASG expr EOS  */
 #line 70 "parser.ypp"
                                                                    {printf("paramchange"); }
-#line 1164 "parser.tab.cpp"
+#line 1165 "parser.tab.cpp"
     break;
 
-  case 14: /* keybindchange: KEYBD STR STR EOS  */
+  case 13: /* keybindchange: KEYBD STR STR EOS  */
 #line 71 "parser.ypp"
                                  {printf("Keybind change");}
-#line 1170 "parser.tab.cpp"
+#line 1171 "parser.tab.cpp"
     break;
 
 
-#line 1174 "parser.tab.cpp"
+#line 1175 "parser.tab.cpp"
 
       default: break;
     }
@@ -1370,6 +1371,7 @@ yyreturn:
 int main()
 {
     yyparse();
+    gameloop();
     return 0;
 }
 

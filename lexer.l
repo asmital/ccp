@@ -44,8 +44,8 @@ char* get_str(char* str);
 "else"                      { return ELSE; }
 "endif"                     { return ENDIF; }
 "keybind"                   { return KEYBD; }
-([a-zA-Z_][a-zA-Z0-9_]*)    { yylval.str = get_str(yytext); return ID; }
-\"(\\.|[^"\\])*\"           { yylval.str = yytext; return STR; }
+([a-zA-Z_][a-zA-Z0-9_]*)    { yylval.str = strdup(yytext); return ID; }
+\"(\\.|[^"\\])*\"           { yylval.str = strdup(yytext); return STR; }
 \n                          { }
 [ \t]                       {;}
 ;                           { return EOS;}
@@ -56,9 +56,3 @@ bool get_bool(char* str) {
     return strcmp("true", str);
 }
 
-char* get_str(char* str) {
-    int n = strlen(str);
-    char* new_str = (char*) malloc(n * sizeof(char));
-    strcpy(new_str, str);
-    return new_str;
-}

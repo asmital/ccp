@@ -24,5 +24,6 @@ lexerdemo: lexer.l preprocess.sh sample.t
 temp:
 	bison -d parser.ypp
 	flex lexer.l
-	g++ -o test parser.tab.cpp lex.yy.c
+	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+
 
