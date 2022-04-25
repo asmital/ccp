@@ -5,17 +5,18 @@
     #include <math.h>
     #include "game.cpp"
     using namespace std;
+    int pwr(int a, int b);
     int yylex();
     int yyerror(const char* p) { cerr << "Error!" << p << endl; return 0;};
     extern char yytext[];
 %}
-
+ 
 /* %define api.value.type { std::string } */
-
+ 
 %code requires {
     #include <string.h>
 }
-
+ 
 /* declare tokens */
 %union {
     int val;
@@ -24,7 +25,7 @@
     char* str;
     bool b;
 };
-%token NUM
+%token<val> NUM
 %token BOOL
 %token OPP
 %token CLP
@@ -54,32 +55,81 @@
 %token THEN
 %token ELSE
 %token ENDIF
-%token KEYBD
+%token<str> KEYBD
 %token ID
 %token SSTR
 %token EOS
-
+ 
 %type<str> identifier
 %type<str> sstring
+%type<val> expr
+%type<val> factor
+%type<val> term
+%type<val> subterm
+%type<val> uterm
+ 
 %%
-
-
+ 
+ 
 setup: start_setup setup_block end_setup
 start_setup: OPSB SETUP_TK CLSB 
 setup_block: setup_stmt setup_block | setup_stmt
 end_setup: OPSB ENDSEC SETUP_TK CLSB
-
-setup_stmt: bgchange { cout << "bgchange\n"; }
-
+ 
+setup_stmt: bgchange { cout << "bgchange\n"; } |levelrule {cout<<"levelrule\n";}| keybindrule {cout<<"keybindrule\n";}
+ 
 bgchange: identifier ASG sstring EOS { cout << "bgchange" << $1 << " " << $3 << endl;}
+levelrule: LET identifier ASG expr EOS {cout<< "levelrule" << $2<< " " << $4 <<endl;}
+keybindrule: KEYBD identifier identifier EOS {cout<< "keybind" << $2<< " " << $3 <<endl;}
  
 identifier:
     ID { $$ = strdup(yylval.id); }
 sstring:
     SSTR { $$ = strdup(yylval.str); }
-
+ 
+ 
+/* component may have ADD/SUB operators among factors */
+expr: factor
+| expr ADD factor {$$ = $1 + $3;}
+| expr SUB factor {$$ = $1 - $3;}
+;
+ 
+/* factor may have MUL/DIV operators among terms */
+factor: term
+| factor MUL term {$$ = $1 * $3;}
+| factor DIV term {if($3) $$ = $1 / $3; else yyerror("Division by zero\n");}
+;
+ 
+/* term comprises of subterms which may have power operator */
+term: subterm
+| term EXP subterm {$$ = pwr($1, $3);}
+;
+ 
+/* this rule supports unary plus/minus (Associativity RIGHT-TO-LEFT) */
+subterm: uterm
+| SUB uterm {$$ = -$2;}
+| ADD uterm {$$ = $2;}
+ 
+/* this rule supports brackets in the grammar */
+uterm: NUM
+| OPP expr CLP {$$ = $2;}
+ 
+ 
+ 
+ 
+ 
 %%
-
+/* pow in cmath works with doubles. i needed integers */
+int pwr(int a, int b)
+{
+    if(b < 0) return 0;
+    int res = 1;
+    for(int i = 0; i < b; i++)
+        res *= a;
+    return res;
+}
+ 
+ 
 int main()
 {
     #ifdef YYDEBUG
@@ -89,4 +139,3 @@ int main()
     /* gameloop(); */
     return 0;
 }
-
