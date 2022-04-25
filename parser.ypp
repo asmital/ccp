@@ -7,7 +7,14 @@
     using namespace std;
     int yylex();
     int yyerror(const char* p) { cerr << "Error!" << endl; return 0;};
+    extern char yytext[];
 %}
+
+/* %define api.value.type { std::string } */
+
+%code requires {
+    #include <string>
+}
 
 /* declare tokens */
 %union {
@@ -15,7 +22,7 @@
     char sym;
     char* str;
     bool b;
-}
+};
 %token NUM
 %token BOOL
 %token OPP
@@ -51,9 +58,7 @@
 %token STR
 %token EOS
 
-%type<val> NUM
-%type<b> BOOL
-%type<str> STR
+%type<str> identifier
 %%
 
 
@@ -62,16 +67,12 @@ start_setup: OPSB SETUP_TK CLSB
 setup_block: setup_stmt setup_block | setup_stmt
 end_setup: OPSB ENDSEC SETUP_TK CLSB
 
-setup_stmt: bgchange {printf("bgchange\n");}
-            | paramchange {printf("paramchange\n");}
-            | keybindchange {printf("keybindchange\n");}
+setup_stmt: bgchange { cout << "bgchange\n"; }
 
-bgchange: identifier ASG identifier EOS {printf("bgchange"); }
-paramchange: LET identifier ASG expr EOS | identifier ASG expr EOS {printf("paramchange"); }
-keybindchange: KEYBD STR STR EOS {printf("Keybind change");}
+bgchange: identifier ASG identifier EOS { cout << "bgchange" << $1 << " " << $3 << endl;}
  
-expr: 
-    NUM
+identifier:
+    ID { $$ = yylval.str; }
 /* |   expr ADD expr { $$ = $1 + $3; }
 |   expr SUB expr { $$ = $1 - $3; }
 |   expr MUL expr { $$ = $1 * $3; }
@@ -83,13 +84,12 @@ definition: LET identifier ASG OPSB array CLSB EOS
             | LET identifier ASG identifierexpression EOS
 identifierexpression: identifier EOS//i am not doing tetronimo arithmetic
 array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM */
-identifier: STR
 %%
 
 int main()
 {
     yyparse();
-    gameloop();
+    /* gameloop(); */
     return 0;
 }
 

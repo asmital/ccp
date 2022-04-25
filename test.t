@@ -1,1 +1,3 @@
-[setup] [/setup]
+[setup] 
+hello = five;
+[\setup]

@@ -7,7 +7,6 @@ using namespace std;
 // extern int yyerror(char* s);
 
 bool get_bool(char* str);
-char* get_str(char* str);
 %}
 
 %option noyywrap
