@@ -13,7 +13,7 @@ bool get_bool(char* str);
 
 %%
 ([0-9]*[.])?[0-9]+          { yylval.val = atoi(yytext); return NUM;}
-(true|false)                { yylval.b = get_bool(yytext); return BOOL; }
+(true|false)                { yylval.val = get_bool(yytext); return BOOL; }
 "("                         { return OPP; }
 ")"                         { return CLP; }
 "{"                         { return OPB; }

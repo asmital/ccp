@@ -4,11 +4,15 @@
     #include <stdio.h>
     #include <math.h>
     #include "game.cpp"
+    #include <vector>
+    #include <map>
     using namespace std;
     int pwr(int a, int b);
     int yylex();
     int yyerror(const char* p) { cerr << "Error!" << p << endl; return 0;};
     extern char yytext[];
+    vector<vector<int>> blocks;
+	map<string, double> generic_rules;
 %}
 
 /* %define api.value.type { std::string } */
@@ -23,33 +27,23 @@
     char sym;
     char* id;
     char* str;
-    bool b;
 };
 %token<val> NUM
-%token BOOL
-%token OPP
-%token CLP
-%token OPB
-%token CLB
-%token OPSB
-%token CLSB
+%token<val> BOOL
+%token OPP CLP
+%token OPB CLB
+%token OPSB CLSB
 %token CMA
 %token ENDSEC
-%token ADD
-%token SUB
-%token MUL
-%token DIV
+%token ADD SUB
+%token MUL DIV
 %token ASG
 %token EXP
 %token COL
-%token GT
-%token LT
-%token NE
-%token EQ
-%token GTE
-%token LTE
-%token UPDATE_TK
-%token SETUP_TK
+%token GT LT
+%token NE EQ
+%token GTE LTE
+%token UPDATE_TK SETUP_TK
 %token LET
 %token IF
 %token THEN
@@ -61,6 +55,7 @@
 %token EOS
 
 %type<str> identifier
+%type<val> stored_identifier
 %type<str> sstring
 %type<val> expr
 %type<val> factor
@@ -76,14 +71,23 @@ start_setup: OPSB SETUP_TK CLSB
 setup_block: setup_stmt setup_block | setup_stmt
 end_setup: OPSB ENDSEC SETUP_TK CLSB
 
-setup_stmt: bgchange |levelrule | keybindrule|genericrule|arrayrule
+setup_stmt: bgchange | keybindrule | genericrule | blockrule | arrayrule
 
-bgchange: identifier ASG sstring EOS { cout << "bgchange " << $1 << " " << $3 << endl;}
-levelrule: LET identifier ASG expr EOS {cout<< "levelrule " << $2<< " " << $4 <<endl;}
-keybindrule: KEYBD identifier identifier EOS {cout<< "keybind " << $2<< " " << $3 <<endl;}
-genericrule: identifier ASG expr EOS { cout <<"genericrule " << $1 << " " << $3 << endl;}
-arrayrule: LET identifier ASG OPSB array CLSB EOS{ cout <<"arrayrule " << $2 << " " << endl;}
-array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM { cout <<"array " << $1<< " " << $3<< " " << $5<< " " << $7<< " " <<endl;}
+bgchange: identifier ASG sstring EOS { cout << "bgchange " << $1 << " " << $3 << endl; }
+
+keybindrule: KEYBD identifier identifier EOS {cout<< "keybind " << $2<< " " << $3 <<endl; }
+
+genericrule: identifier ASG expr EOS
+{ 
+    cout <<"genericrule " << $1 << " " << $3 << endl; 
+    generic_rules.insert(pair<string, double>($1, $3));
+}
+
+blockrule: LET identifier ASG expr EOS { cout << "blockrule " << $2 << " " << $4 << endl; }
+
+arrayrule: LET identifier ASG OPSB array CLSB EOS{ cout <<"arrayrule " << $2 << " " << endl; }
+
+array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM { cout << "array " << $1<< " " << $3<< " " << $5<< " " << $7<< " " <<endl;}
 
 
 identifier:
@@ -93,9 +97,11 @@ sstring:
 
     
 /* component may have ADD/SUB operators among factors */
-expr: factor
+expr: 
+  factor
 | expr ADD factor {$$ = $1 + $3;}
 | expr SUB factor {$$ = $1 - $3;}
+| BOOL
 ;
  
 /* factor may have MUL/DIV operators among terms */
@@ -113,10 +119,25 @@ term: subterm
 subterm: uterm
 | SUB uterm {$$ = -$2;}
 | ADD uterm {$$ = $2;}
+;
 
 /* this rule supports brackets in the grammar */
 uterm: NUM
+| stored_identifier
 | OPP expr CLP {$$ = $2;}
+;
+
+stored_identifier: 
+    ID { 
+        string label = strdup(yyval.str); 
+        auto it = generic_rules.find(label);  
+        if (it == generic_rules.end())
+        {
+            cout << "Variable " << label << " unassigned" << endl;
+            yyerror("Variable unassigned");
+        }
+        $$ = it->second;
+    }
 
 
 
@@ -143,6 +164,8 @@ int main()
     */
     yyparse();
     /* gameloop(); */
+    for (const auto &[k, v] : generic_rules)
+        std::cout << "m[" << k << "] = (" << v << ") " << std::endl; 
     return 0;
 }
 
