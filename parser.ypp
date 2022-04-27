@@ -176,7 +176,8 @@ stored_identifier:
 
 
 %%
-/* pow in cmath works with doubles. i needed integers */
+
+// pow for integers
 int pwr(int a, int b)
 {
     if(b < 0) return 0;
