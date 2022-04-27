@@ -197,7 +197,6 @@ int main()
     yyparse();
     for (const auto &[k, v] : generic_rules)
     {
-        std::cout << "generic_rules[" << k << "] = (" << v << ") " << std::endl; 
         if (k == "frameRateLimit")
             gconf.frameRateLimit = v;
         else if (k == "normalTimeDelta")
@@ -247,7 +246,6 @@ int main()
 
     for (const auto &[k, v] : string_rules)
     {
-        std::cout << "string_rules[" << k << "] = (" << v << ") " << std::endl; 
         if (k =="gameWindowTitle")
             gconf.gameWindowTitle = v;
         else if (k == "gameOverMsg")
@@ -300,13 +298,13 @@ int main()
             yyerror("");
         }
     }
-    for (const auto &[k, v] : array_rules)
+    /* for (const auto &[k, v] : array_rules)
     {
         std::cout << "array_rules[" << k << "] = (";
         for (int x: v.first)
             std::cout << x << " ";
         std::cout << ") % " << v.second << std::endl; 
-    }
+    } */
 
     gameloop(gconf);
     return 0;
