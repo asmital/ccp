@@ -3,7 +3,7 @@
 gameWindowTitle = "Small Blue Tetris";
 tileSpriteImgPath = "images/tetris_tile_blue.png";
 
-numTilesX = 10;
+numTilesX = 15;
 numTilesY = numTilesX * 1.5;
 
 backgroundColorR = 170;
