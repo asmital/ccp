@@ -97,14 +97,20 @@ void rotate(Piece& piece)
 }
 
 
-
+/*
+Game configuration struct. 
+Everything has default values. 
+Interface to syntax directed tweaking in parser.ypp
+*/
 struct game_config {
 
 	std::string gameWindowTitle = "tetris 45 paav";
 	int frameRateLimit = 60; 
 
-	int normalTimeDelta = 10; 
+ 	//smaller delta --> faster game
+	int normalTimeDelta = 10;
 	int fastTimeDelta = 1;
+
 	int singleLineReward = 1;
 	int doubleLineReward = 4;
 	int tripleLineReward = 9;
@@ -113,6 +119,8 @@ struct game_config {
 
 	int tileScaleX = 2.83;
 	int tileScaleY = 2.83;
+
+	//change these to control window size
 	int numTilesX = 12;
 	int numTilesY = 20;
 
