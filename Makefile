@@ -9,11 +9,6 @@ game: game.cpp
 clean: 
 	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test
 
-
-rungame: game
-	 @echo "Autorunning with make.\n\n"
-	 @./game
-
 lexerdemo: lexer.l preprocess.sh sample.t
 	  chmod 777 preprocess.sh	
 	  ./preprocess.sh sample.t preprocessed.t

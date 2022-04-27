@@ -9,7 +9,7 @@
     using namespace std;
     int pwr(int a, int b);
     int yylex();
-    int yyerror(const char* p) { cerr << "Error!" << p << endl; exit(1);};
+    int yyerror(const char* p) { cerr << "Error! " << p << endl; exit(1);};
     extern char yytext[];
     vector<vector<int>> blocks;
 	map<string, double> generic_rules;
@@ -74,12 +74,25 @@
 
 setup: start_setup setup_block end_setup
 start_setup: OPSB SETUP_TK CLSB 
-setup_block: setup_stmt setup_block | setup_stmt
-end_setup: OPSB ENDSEC SETUP_TK CLSB
+setup_block: proper_stmt setup_block | proper_stmt
+
+end_setup: 
+    OPSB ENDSEC SETUP_TK CLSB {}
+|   OPSB DIV SETUP_TK CLSB 
+    {
+        yyerror("The end-setup token uses a backslash.\n");
+    }
+
+proper_stmt: 
+    setup_stmt EOS {}
+|   setup_stmt 
+    {
+        yyerror("Did you forget a semicolon?\n");
+    }
 
 setup_stmt: stringrule | keybindrule | genericrule | arrayrule
 
-stringrule: identifier ASG sstring EOS 
+stringrule: identifier ASG sstring
 { 
     string value = $3;
     // chop the beginning and trailing quotes
@@ -88,12 +101,12 @@ stringrule: identifier ASG sstring EOS
     string_rules.insert(pair<string, string>($1, value));
 }
 
-keybindrule: KEYBD identifier identifier EOS 
+keybindrule: KEYBD identifier identifier 
 {
     keybind_rules.insert(pair<string, string>($2, $3));
 }
 
-genericrule: identifier ASG expr EOS
+genericrule: identifier ASG expr 
 { 
     generic_rules.insert(pair<string, double>($1, $3));
 }
@@ -102,7 +115,7 @@ genericrule: identifier ASG expr EOS
     cout << "blockrule " << $2 << " " << $4 << endl; 
 } */
 
-arrayrule: LET identifier ASG OPSB array CLSB PROP expr EOS 
+arrayrule: LET identifier ASG OPSB array CLSB PROP expr 
 { 
     pair<vector<int>, int> block = make_pair(temp_array, $8);
     array_rules.insert(pair<string, pair<vector<int>, int>>($2, block));
@@ -224,6 +237,11 @@ int main()
             gconf.fontColorG = v;
         else if (k == "fontColorB")
             gconf.fontColorB = v;
+        else
+        {
+            cout << "Invalid rule: " << k << endl;
+            yyerror("");
+        }
     }
 
     for (const auto &[k, v] : string_rules)
@@ -255,6 +273,11 @@ int main()
             gconf.tetrisSoundPath = v;
         else if (k == "fontPath")
             gconf.fontPath = v;
+        else
+        {
+            cout << "Invalid rule: " << k << endl;
+            yyerror("");
+        }
 
     }
 
@@ -270,6 +293,11 @@ int main()
             gconf.keyRIGHT = v;
         else if (k == "QUIT")
             gconf.keyQUIT = v;
+        else
+        {
+            cout << "Invalid rule: " << k << endl;
+            yyerror("");
+        }
     }
     for (const auto &[k, v] : array_rules)
     {
