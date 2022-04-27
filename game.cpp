@@ -132,7 +132,7 @@ struct game_config {
 	std::string keyDOWN = "K";
 	std::string keyLEFT = "J";
 	std::string keyRIGHT = "L";
-	std::string keyQuit = "SPACEBAR";
+	std::string keyQUIT = "SPACEBAR";
 
 	std::string tileSpriteImgPath = "images/tetris_tile.png";
 
@@ -229,7 +229,7 @@ int gameloop(game_config gconf)
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(gconf.KeyNameMap[gconf.keyQuit]))
+			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(gconf.KeyNameMap[gconf.keyQUIT]))
 			{
 				window.close();
 			}

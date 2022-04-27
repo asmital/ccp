@@ -9,7 +9,7 @@
     using namespace std;
     int pwr(int a, int b);
     int yylex();
-    int yyerror(const char* p) { cerr << "Error!" << p << endl; return 0;};
+    int yyerror(const char* p) { cerr << "Error!" << p << endl; exit(1);};
     extern char yytext[];
     vector<vector<int>> blocks;
 	map<string, double> generic_rules;
@@ -178,12 +178,53 @@ int main()
 {
     /* #ifdef YYDEBUG
         yydebug = 1;
-    #else 
     #endif
     */
     yyparse();
     for (const auto &[k, v] : generic_rules)
+    {
         std::cout << "generic_rules[" << k << "] = (" << v << ") " << std::endl; 
+        if (k == "frameRateLimit")
+            gconf.frameRateLimit = v;
+        else if (k == "normalTimeDelta")
+            gconf.normalTimeDelta = v;
+        else if (k == "fastTimeDelta")
+            gconf.fastTimeDelta = v;
+        else if (k == "singleLineReward")
+            gconf.singleLineReward = v;
+        else if (k == "doubleLineReward")
+            gconf.doubleLineReward = v;
+        else if (k == "tripleLineReward")
+            gconf.tripleLineReward = v;
+        else if (k == "fourLineReward")
+            gconf.fourLineReward = v;
+        else if (k == "tileScaleX")
+            gconf.tileScaleX = v;
+        else if (k == "tileScaleY")
+            gconf.tileScaleY = v;
+        else if (k == "numTilesX")
+            gconf.numTilesX = v;
+        else if (k == "numTilesY")
+            gconf.numTilesY = v;
+        else if (k == "backgroundColorR")
+            gconf.backgroundColorR = v;
+        else if (k == "backgroundColorG")
+            gconf.backgroundColorG = v;
+        else if (k == "backgroundColorB")
+            gconf.backgroundColorB = v;
+        else if (k == "fontSize")
+            gconf.fontSize = v;
+        else if (k == "fontScaleX")
+            gconf.fontScaleX = v;
+        else if (k == "fontScaleY")
+            gconf.fontScaleY = v;
+        else if (k == "fontColorR")
+            gconf.fontColorR = v;
+        else if (k == "fontColorG")
+            gconf.fontColorG = v;
+        else if (k == "fontColorB")
+            gconf.fontColorB = v;
+    }
 
     for (const auto &[k, v] : string_rules)
     {
@@ -201,7 +242,7 @@ int main()
         else if (k == "keyRIGHT")
             gconf.keyRIGHT = v;
         else if (k == "keyQuit")
-            gconf.keyQuit = v;
+            gconf.keyQUIT = v;
         else if (k == "tileSpriteImgPath")
             gconf.tileSpriteImgPath = v;
         else if (k == "musicPath")
@@ -220,15 +261,15 @@ int main()
     for (const auto &[k, v] : keybind_rules)
     {
         if (k == "UP")
-            gconf.KeyUP = v;
+            gconf.keyUP = v;
         else if (k == "DOWN")
-            gconf.KeyDOWN = v;
+            gconf.keyDOWN = v;
         else if (k == "LEFT")
-            gconf.KeyLEFT = v;
+            gconf.keyLEFT = v;
         else if (k == "RIGHT")
-            gconf.KeyRIGHT = v;
+            gconf.keyRIGHT = v;
         else if (k == "QUIT")
-            gconf.KeyQUIT = v;
+            gconf.keyQUIT = v;
     }
     for (const auto &[k, v] : array_rules)
     {
