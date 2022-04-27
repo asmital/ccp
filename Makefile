@@ -1,36 +1,30 @@
-deps: 
+dependencies:
 	sudo apt-get install libsfml-dev
-	
 
-game: game.cpp
-	  g++ -c game.cpp
-	  g++ game.o -o game -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+lexer: lexer.l
+	   @echo "Flex generating source for lexer\n"
+	   flex lexer.l
+	   @echo "g++ compiling source for lexer\n"
+	   g++ -c -std=gnu++17 lex.yy.c
+
+parser: parser.ypp game.cpp
+		@echo "Bison generating source for LR parser\n"
+		bison -d parser.ypp
+		@echo "g++ compiling source for parser AND game engine\n"
+		g++ -c -std=gnu++17 parser.tab.cpp 
+
+engine: parser lexer
+	  @echo "g++ linking translation units and SFML libraries\n"
+	  g++ -o engine parser.tab.o lex.yy.o -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+	
+run: engine
+	 @echo "Preprocessing tetris design spec source"
+	 ./preprocess.sh source.t preprocessed.t
+	 @echo "Engine parsing design spec and launching game"
+	 ./engine < preprocessed.t
+
 
 clean: 
 	rm -f *.o *.out lex.yy.c parser.tab.cpp parser.tab.hpp preprocessed.t game lexerdemo lexer test
-
-lexerdemo: lexer.l preprocess.sh sample.t
-	  chmod 777 preprocess.sh	
-	  ./preprocess.sh sample.t preprocessed.t
-	  flex -d lexer.l
-	  gcc lex.yy.c -ll -o lexerdemo
-	  ./lexerdemo < preprocessed.t
-	  
-temp:
-	bison -d -t parser.ypp
-	flex -d lexer.l
-	g++ -o test_d parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-
-	bison -d parser.ypp
-	flex lexer.l
-	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-
-asmitemp:
-	bison parser.ypp
-	flex lexer.l
-	g++ -o test parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-	./preprocess.sh test.t amu.t
-	
-	
 
 
