@@ -81,7 +81,6 @@ setup_stmt: stringrule | keybindrule | genericrule | arrayrule
 
 stringrule: identifier ASG sstring EOS 
 { 
-    cout << "stringrule " << $1 << " " << $3 << endl; 
     string value = $3;
     // chop the beginning and trailing quotes
     value = value.substr(1, value.size() - 2);
@@ -91,13 +90,11 @@ stringrule: identifier ASG sstring EOS
 
 keybindrule: KEYBD identifier identifier EOS 
 {
-    cout<< "keybind " << $2<< " " << $3 <<endl; 
     keybind_rules.insert(pair<string, string>($2, $3));
 }
 
 genericrule: identifier ASG expr EOS
 { 
-    cout <<"genericrule " << $1 << " " << $3 << endl; 
     generic_rules.insert(pair<string, double>($1, $3));
 }
 
@@ -187,10 +184,52 @@ int main()
     yyparse();
     for (const auto &[k, v] : generic_rules)
         std::cout << "generic_rules[" << k << "] = (" << v << ") " << std::endl; 
+
     for (const auto &[k, v] : string_rules)
+    {
         std::cout << "string_rules[" << k << "] = (" << v << ") " << std::endl; 
+        if (k =="gameWindowTitle")
+            gconf.gameWindowTitle = v;
+        else if (k == "gameOverMsg")
+            gconf.gameOverMsg = v;
+        else if (k == "keyUP")
+            gconf.keyUP = v;
+        else if (k == "keyDOWN")
+            gconf.keyDOWN = v;
+        else if (k == "keyLEFT")
+            gconf.keyLEFT = v;
+        else if (k == "keyRIGHT")
+            gconf.keyRIGHT = v;
+        else if (k == "keyQuit")
+            gconf.keyQuit = v;
+        else if (k == "tileSpriteImgPath")
+            gconf.tileSpriteImgPath = v;
+        else if (k == "musicPath")
+            gconf.musicPath = v;
+        else if (k == "fallSoundPath")
+            gconf.fallSoundPath = v;
+        else if (k == "lineSoundPath")
+            gconf.lineSoundPath = v;
+        else if (k == "tetrisSoundPath")
+            gconf.tetrisSoundPath = v;
+        else if (k == "fontPath")
+            gconf.fontPath = v;
+
+    }
+
     for (const auto &[k, v] : keybind_rules)
-        std::cout << "keybind_rules[" << k << "] = (" << v << ") " << std::endl; 
+    {
+        if (k == "UP")
+            gconf.KeyUP = v;
+        else if (k == "DOWN")
+            gconf.KeyDOWN = v;
+        else if (k == "LEFT")
+            gconf.KeyLEFT = v;
+        else if (k == "RIGHT")
+            gconf.KeyRIGHT = v;
+        else if (k == "QUIT")
+            gconf.KeyQUIT = v;
+    }
     for (const auto &[k, v] : array_rules)
     {
         std::cout << "array_rules[" << k << "] = (";
@@ -199,10 +238,7 @@ int main()
         std::cout << ") % " << v.second << std::endl; 
     }
 
-
-    /* // fill struct
-    struct varun = varunstruct;
-    gameloop(varun); */
+    gameloop(gconf);
     return 0;
 }
 

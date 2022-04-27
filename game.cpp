@@ -434,8 +434,3 @@ int gameloop(game_config gconf)
 
 	return 0;
 }
-
-int main()
-{
-	gameloop(gconf);
-}
