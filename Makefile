@@ -22,7 +22,7 @@ lexerdemo: lexer.l preprocess.sh sample.t
 	  ./lexerdemo < preprocessed.t
 	  
 temp:
-	bison -d -t parser.ypp
+	bison -d -t parser.ypp -Wcounterexamples
 	flex -d lexer.l
 	g++ -o test_d parser.tab.cpp lex.yy.c -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 

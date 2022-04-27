@@ -24,13 +24,13 @@ let block1 = [
         0, 0, 0,
         2,   2, 2,
         0, 2, 0
-];
+] % 23;
 
 let block2 = [
         0, 1, 0,
         1, 1, 1, 
         1, 1, 1
-];
+] % 26;
  
 let block3 = block1 * 3;
 let block4 = block2 + block3;

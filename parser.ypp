@@ -13,6 +13,11 @@
     extern char yytext[];
     vector<vector<int>> blocks;
 	map<string, double> generic_rules;
+	map<string, string> string_rules;
+	map<string, string> keybind_rules;
+	map<string, pair<vector<int>, int>> array_rules;
+	map<string, vector<pair<string, int>>> dict_rules;
+    vector<int> temp_array;
 %}
 
 /* %define api.value.type { std::string } */
@@ -42,6 +47,7 @@
 %token COL
 %token GT LT
 %token NE EQ
+%token PROP
 %token GTE LTE
 %token UPDATE_TK SETUP_TK
 %token LET
@@ -71,11 +77,23 @@ start_setup: OPSB SETUP_TK CLSB
 setup_block: setup_stmt setup_block | setup_stmt
 end_setup: OPSB ENDSEC SETUP_TK CLSB
 
-setup_stmt: bgchange | keybindrule | genericrule | blockrule | arrayrule
+setup_stmt: stringrule | keybindrule | genericrule | arrayrule
 
-bgchange: identifier ASG sstring EOS { cout << "bgchange " << $1 << " " << $3 << endl; }
+stringrule: identifier ASG sstring EOS 
+{ 
+    cout << "stringrule " << $1 << " " << $3 << endl; 
+    string value = $3;
+    // chop the beginning and trailing quotes
+    value = value.substr(1, value.size() - 2);
 
-keybindrule: KEYBD identifier identifier EOS {cout<< "keybind " << $2<< " " << $3 <<endl; }
+    string_rules.insert(pair<string, string>($1, value));
+}
+
+keybindrule: KEYBD identifier identifier EOS 
+{
+    cout<< "keybind " << $2<< " " << $3 <<endl; 
+    keybind_rules.insert(pair<string, string>($2, $3));
+}
 
 genericrule: identifier ASG expr EOS
 { 
@@ -83,12 +101,19 @@ genericrule: identifier ASG expr EOS
     generic_rules.insert(pair<string, double>($1, $3));
 }
 
-blockrule: LET identifier ASG expr EOS { cout << "blockrule " << $2 << " " << $4 << endl; }
+/* blockrule: LET identifier ASG expr EOS {
+    cout << "blockrule " << $2 << " " << $4 << endl; 
+} */
 
-arrayrule: LET identifier ASG OPSB array CLSB EOS{ cout <<"arrayrule " << $2 << " " << endl; }
+arrayrule: LET identifier ASG OPSB array CLSB PROP expr EOS 
+{ 
+    pair<vector<int>, int> block = make_pair(temp_array, $8);
+    array_rules.insert(pair<string, pair<vector<int>, int>>($2, block));
+}
 
-array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM { cout << "array " << $1<< " " << $3<< " " << $5<< " " << $7<< " " <<endl;}
-
+array: NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM CMA NUM {
+    temp_array = {$1, $3, $5, $7, $9, $11, $13, $15, $17};
+}
 
 identifier:
     ID { $$ = strdup(yylval.id); }
@@ -140,9 +165,6 @@ stored_identifier:
     }
 
 
-
-
-
 %%
 /* pow in cmath works with doubles. i needed integers */
 int pwr(int a, int b)
@@ -163,9 +185,24 @@ int main()
     #endif
     */
     yyparse();
-    /* gameloop(); */
     for (const auto &[k, v] : generic_rules)
-        std::cout << "m[" << k << "] = (" << v << ") " << std::endl; 
+        std::cout << "generic_rules[" << k << "] = (" << v << ") " << std::endl; 
+    for (const auto &[k, v] : string_rules)
+        std::cout << "string_rules[" << k << "] = (" << v << ") " << std::endl; 
+    for (const auto &[k, v] : keybind_rules)
+        std::cout << "keybind_rules[" << k << "] = (" << v << ") " << std::endl; 
+    for (const auto &[k, v] : array_rules)
+    {
+        std::cout << "array_rules[" << k << "] = (";
+        for (int x: v.first)
+            std::cout << x << " ";
+        std::cout << ") % " << v.second << std::endl; 
+    }
+
+
+    /* // fill struct
+    struct varun = varunstruct;
+    gameloop(varun); */
     return 0;
 }
 

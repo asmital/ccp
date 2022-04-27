@@ -27,6 +27,7 @@ bool get_bool(char* str);
 "*"                         { return MUL; }
 "/"                         { return DIV; }
 "="                         { return ASG; }
+"%"                         { return PROP; }
 "^"                         { return EXP; }
 ":"                         { return COL; }
 ">"                         { return GT; }
@@ -52,6 +53,6 @@ bool get_bool(char* str);
 %%
 
 bool get_bool(char* str) {
-    return strcmp("true", str);
+    return strcmp("false", str);
 }
 
